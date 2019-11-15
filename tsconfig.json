@@ -1,8 +1,12 @@
 {
   "compilerOptions": {
     "module": "commonjs",
+    "allowSyntheticDefaultImports": true,
     "target": "es2015",
-    "outDir": "dist"
+    "outDir": "dist",
+    "skipLibCheck": true
   },
-  "files": ["index.ts"]
+  "include": [
+    "src/**/*.ts"
+  ]
 }

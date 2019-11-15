@@ -1,6 +1,6 @@
-dist/index.js: index.ts
-	yarn tsc
-	yarn ncc build dist/index.js
+main: lib/index.js
+lib/index.js: src/index.ts src/deploy.ts
+	yarn ncc build src/index.ts -o lib
 test:
 	docker run \
 		-v `pwd`:/src \
