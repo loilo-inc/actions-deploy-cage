@@ -1,0 +1,31 @@
+{
+  "name": "setup-cage",
+  "version": "1.0.0",
+  "author": "keroxp <kerokerokerop@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest --forceExit"
+  },
+  "jest": {
+    "preset": "ts-jest"
+  },
+  "dependencies": {
+    "@actions/core": "^1.2.0",
+    "@actions/exec": "^1.0.1",
+    "@actions/io": "^1.0.1",
+    "@actions/tool-cache": "^1.1.2",
+    "@octokit/rest": "^16.35.0",
+    "@types/download": "^6.2.4",
+    "@zeit/ncc": "^0.20.5",
+    "caporal": "^1.3.0",
+    "download": "^7.1.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.23",
+    "@types/node": "^12.12.7",
+    "jest": "^24.9.0",
+    "prettier": "^1.19.1",
+    "ts-jest": "^24.1.0",
+    "typescript": "^3.7.2"
+  }
+}

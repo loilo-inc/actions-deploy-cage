@@ -1,0 +1,33 @@
+name: 'Canarycage Deploy'
+description: 'Rollout service with cage'
+author: 'LoiLo'
+inputs:
+  cage-version:
+    description: "Canarycage version"
+    default: "3.1.1"
+    required: false
+  deploy-context:
+    description: "Directory path that contains service.json and task-definition.json. Mostly relative path from project root.",
+    required: true
+  region:
+    description: "AWS region that cluster exists"
+    required: true
+  create-deployment:
+    description: "Create deployment history on the repository. true or false"
+    required: false
+  envitonment:
+    description: "Release environment for deployment. It is used to create github deployment."
+    required: false
+  github-repository:
+    description: ":owner/:repo style github repository. Required if create deployment history. Use ${{ github.repository }}"
+    required: false
+  github-token:
+    description: "Github Token to create deployment on the repository. Use ${{ secrets.GITHUB_TOKEN }}"
+    required: false
+  setup-only:
+    description: "Skip deployment and expose deploy CLI as 'deploy-cage' to $PATH"
+    default: false
+    required: false
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
