@@ -18,6 +18,9 @@ inputs:
   envitonment:
     description: "Arbitrary release environment for github deployment. e.g. development,staging,production... Required by --create-deployment"
     required: false
+  github-ref:
+    description: "Git tag or branch or sha1 to deploy. Required by --create-deployment."
+    required: false
   github-repository:
     description: ":owner/:repo style github repository. Required by --create-deployment. Use ${{ github.repository }}."
     required: false
