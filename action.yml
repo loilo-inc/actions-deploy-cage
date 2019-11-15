@@ -22,10 +22,10 @@ inputs:
     description: "Git tag or branch or sha1 to deploy. Required by --create-deployment."
     required: false
   github-repository:
-    description: ":owner/:repo style github repository. Required by --create-deployment. Use ${{ github.repository }}."
+    description: ":owner/:repo style github repository. Required by --create-deployment. Use github.repository."
     required: false
   github-token:
-    description: "Github Token to create deployment on the repository. Required by --create-deployment. Use ${{ secrets.GITHUB_TOKEN }}."
+    description: "Github Token to create deployment on the repository. Required by --create-deployment. Use secrets.GITHUB_TOKEN."
     required: false
 runs:
   using: 'node12'
