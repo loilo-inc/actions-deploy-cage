@@ -6,8 +6,11 @@ import * as core from "@actions/core";
 export function parseRef(ref: string): string {
   // refs/heads/master -> master
   // refs/tags/v0.1.0 -> v0.1.0
-  const [_, ret] = ref.match(/^refs\/.+?\/(.+?)$/);
-  return ret;
+  const m = ref.match(/^refs\/.+?\/(.+?)$/);
+  if (m) {
+    return m[1]
+  }
+  return ref;
 }
 
 export async function downloadCage({ version }: { version: string }) {
@@ -44,10 +47,11 @@ export function aggregateDeploymentParams({
     );
   }
   const [owner, repo] = repository.split("/");
+  const parsedRef = parseRef(ref);
   return {
     owner,
     repo,
-    ref,
+    ref: parsedRef,
     token,
     environment
   };
