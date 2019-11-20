@@ -8,7 +8,7 @@ export function parseRef(ref: string): string {
   // refs/tags/v0.1.0 -> v0.1.0
   const m = ref.match(/^refs\/.+?\/(.+?)$/);
   if (m) {
-    return m[1]
+    return m[1];
   }
   return ref;
 }
@@ -96,11 +96,25 @@ export async function deploy({
       throw e;
     }
   }
-  console.log(`Start rolling out...`);
-  const code = await exec.exec(
-    `cage rollout --region ${region} ${deployContext}`
-  );
+  let code: number | undefined;
   try {
+    console.log(`Start rolling out...`);
+    if (deployId) {
+      const { owner, repo } = deployment;
+      await octkit.repos.createDeploymentStatus({
+        owner,
+        repo,
+        deployment_id: deployId,
+        state: "in_progress",
+        headers: {
+          accept: "application/vnd.github.flash-preview+json"
+        }
+      });
+    }
+    code = await exec.exec(`cage rollout --region ${region} ${deployContext}`);
+  } catch (e) {
+    console.error(e);
+  } finally {
     if (deployId) {
       const { owner, repo } = deployment;
       if (code === 0) {
@@ -108,8 +122,13 @@ export async function deploy({
         await octkit.repos.createDeploymentStatus({
           owner,
           repo,
+          auto_inactive: true,
           deployment_id: deployId,
-          state: "success"
+          state: "success",
+          headers: {
+            accept:
+              "application/vnd.github.ant-man-preview+json, application/vnd.github.flash-preview+json"
+          }
         });
       } else {
         console.log(`Updating deployment state to 'failure'...`);
@@ -122,7 +141,5 @@ export async function deploy({
       }
       console.log(`Deployment state updated.`);
     }
-  } finally {
-    process.exit(code);
   }
 }
