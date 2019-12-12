@@ -96,7 +96,7 @@ export async function deploy({
       throw e;
     }
   }
-  let code: number | undefined;
+  let code = 1;
   try {
     console.log(`Start rolling out...`);
     if (deployId) {
@@ -114,6 +114,7 @@ export async function deploy({
     code = await exec.exec(`cage rollout --region ${region} ${deployContext}`);
   } catch (e) {
     console.error(e);
+    core.setFailed(e.message);
   } finally {
     if (deployId) {
       const { owner, repo } = deployment;
@@ -140,6 +141,9 @@ export async function deploy({
         });
       }
       console.log(`Deployment state updated.`);
+      if (code !== 0) {
+        core.setFailed(`Deployment failed with exit code ${code}`)
+      }
     }
   }
 }
