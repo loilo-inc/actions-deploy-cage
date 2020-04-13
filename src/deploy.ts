@@ -114,7 +114,7 @@ export async function deploy({
       });
     }
     let opts = [`--region ${region}`];
-    if (idleDuration != null) {
+    if (idleDuration) {
       opts.push(`--canaryTaskIdleDuration ${idleDuration}`);
     }
     const cmd = `cage rollout ${opts.join(" ")} ${deployContext}`
