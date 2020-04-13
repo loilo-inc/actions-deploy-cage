@@ -25,6 +25,7 @@ async function main() {
   const region = assertInput("region");
   const createDeployment = boolify(core.getInput("create-deployment"));
   const environment = core.getInput("environment");
+  const idleDuration = core.getInput("canary-task-idle-duration");
   const token = core.getInput("github-token");
   const ref = core.getInput("github-ref");
   const repository = core.getInput("github-repository");
@@ -44,7 +45,8 @@ async function main() {
     await deploy({
       deployContext,
       region,
-      deployment
+      deployment,
+      idleDuration,
     });
   } catch (error) {
     core.setFailed(error.message);

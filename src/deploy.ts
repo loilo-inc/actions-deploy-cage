@@ -68,10 +68,12 @@ export type GithubDeploymentParams = {
 export async function deploy({
   deployContext,
   region,
-  deployment
+  deployment,
+  idleDuration
 }: {
   deployContext: string;
   region: string;
+  idleDuration?: string;
   deployment?: GithubDeploymentParams;
 }) {
   let octkit: github.GitHub;
@@ -111,7 +113,12 @@ export async function deploy({
         }
       });
     }
-    code = await exec.exec(`cage rollout --region ${region} ${deployContext}`);
+    let opts = [`--region ${region}`];
+    if (idleDuration != null) {
+      opts.push(`--canaryTaskIdleDuration ${idleDuration}`);
+    }
+    const cmd = `cage rollout ${opts.join(" ")} ${deployContext}`
+    code = await exec.exec(cmd);
   } catch (e) {
     console.error(e);
   } finally {
