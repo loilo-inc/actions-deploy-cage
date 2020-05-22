@@ -18,7 +18,7 @@ inputs:
   canary-task-idle-duration:
     description: "--canaryTaskIdleDuration for cage"
     required: false
-  envitonment:
+  environment:
     description: "Arbitrary release environment for github deployment. e.g. development,staging,production... Required by --create-deployment"
     required: false
   github-ref:
