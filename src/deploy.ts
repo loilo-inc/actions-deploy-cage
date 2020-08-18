@@ -1,4 +1,4 @@
-import * as octkit from "@octokit/rest";
+import { getOctokit } from "@actions/github";
 import * as exec from "@actions/exec";
 import * as tc from "@actions/tool-cache";
 import * as core from "@actions/core";
@@ -76,7 +76,7 @@ export async function deploy({
   idleDuration?: string;
   deployment?: GithubDeploymentParams;
 }) {
-  const o = new octkit.Octokit();
+  const o = getOctokit(deployment?.token ?? "");
   let deployId: number | undefined;
   if (deployment) {
     const { owner, repo, ref, environment } = deployment;
