@@ -1,4 +1,4 @@
-import * as github from "@actions/github";
+import * as octkit from "@octokit/rest";
 import * as exec from "@actions/exec";
 import * as tc from "@actions/tool-cache";
 import * as core from "@actions/core";
@@ -15,7 +15,7 @@ export function parseRef(ref: string): string {
 
 export async function downloadCage({ version }: { version: string }) {
   console.log("🥚 Installing cage...");
-  const url = `https://s3-us-west-2.amazonaws.com/loilo-public/oss/canarycage/${version}/canarycage_linux_amd64.zip`;
+  const url = `https://github.com/loilo-inc/canarycage/releases/download/${version}/canarycage_linux_amd64.zip`;
   const zip = await tc.downloadTool(url);
   const extracted = await tc.extractZip(zip);
   const installed = await tc.cacheDir(extracted, "cage", version);
@@ -76,34 +76,33 @@ export async function deploy({
   idleDuration?: string;
   deployment?: GithubDeploymentParams;
 }) {
-  let octkit: github.GitHub;
+  const o = new octkit.Octokit();
   let deployId: number | undefined;
   if (deployment) {
-    octkit = new github.GitHub(deployment.token);
     const { owner, repo, ref, environment } = deployment;
     console.log("Creating deployment...", owner, repo, ref, environment);
-    try {
-      const { data: deploy } = await octkit.repos.createDeployment({
-        owner,
-        repo,
-        required_contexts: [],
-        ref,
-        auto_merge: false,
-        environment: environment
-      });
-      deployId = deploy.id;
-      console.log(`Deployment created: ${deploy.url}`);
-    } catch (e) {
-      console.error(e);
-      throw e;
+    const resp = await o.repos.createDeployment({
+      owner,
+      repo,
+      required_contexts: [],
+      ref,
+      auto_merge: false,
+      environment: environment
+    });
+    // @ts-ignore
+    const { id, url, message } = resp.data;
+    if (!id || !url) {
+      throw new Error("couldn't create deployment: " + message);
     }
+    deployId = id;
+    console.log(`Deployment created: ${url}`);
   }
   let code = 1;
   try {
     console.log(`Start rolling out...`);
     if (deployId) {
       const { owner, repo } = deployment;
-      await octkit.repos.createDeploymentStatus({
+      await o.repos.createDeploymentStatus({
         owner,
         repo,
         deployment_id: deployId,
@@ -117,7 +116,7 @@ export async function deploy({
     if (idleDuration) {
       opts.push(`--canaryTaskIdleDuration ${idleDuration}`);
     }
-    const cmd = `cage rollout ${opts.join(" ")} ${deployContext}`
+    const cmd = `cage rollout ${opts.join(" ")} ${deployContext}`;
     code = await exec.exec(cmd);
   } catch (e) {
     console.error(e);
@@ -127,7 +126,7 @@ export async function deploy({
       const { owner, repo } = deployment;
       if (code === 0) {
         console.log(`Updating deployment state to 'success'...`);
-        await octkit.repos.createDeploymentStatus({
+        await o.repos.createDeploymentStatus({
           owner,
           repo,
           auto_inactive: true,
@@ -140,7 +139,7 @@ export async function deploy({
         });
       } else {
         console.log(`Updating deployment state to 'failure'...`);
-        await octkit.repos.createDeploymentStatus({
+        await o.repos.createDeploymentStatus({
           owner,
           repo,
           deployment_id: deployId,
@@ -149,7 +148,7 @@ export async function deploy({
       }
       console.log(`Deployment state updated.`);
       if (code !== 0) {
-        core.setFailed(`Deployment failed with exit code ${code}`)
+        core.setFailed(`Deployment failed with exit code ${code}`);
       }
     }
   }
