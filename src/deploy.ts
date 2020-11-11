@@ -2,6 +2,8 @@ import { getOctokit } from "@actions/github";
 import * as exec from "@actions/exec";
 import * as tc from "@actions/tool-cache";
 import * as core from "@actions/core";
+import type * as gh from "@actions/github/lib/utils"
+type Github = InstanceType<typeof gh.GitHub>
 
 export function parseRef(ref: string): string {
   // refs/heads/master -> master
@@ -41,7 +43,7 @@ export function aggregateDeploymentParams({
   !ref && missings.push("--github-ref");
   !token && missings.push("--github-token");
   !repository && missings.push("--github-repository");
-  if (missings.length > 0) {
+  if (!environment || !ref || !token || !repository) {
     throw new Error(
       `${missings.join(",")} are required if --create-deployment specified.`
     );
@@ -76,12 +78,13 @@ export async function deploy({
   idleDuration?: string;
   deployment?: GithubDeploymentParams;
 }) {
-  const o = getOctokit(deployment?.token ?? "");
+  let github: Github|undefined
   let deployId: number | undefined;
   if (deployment) {
+    github = getOctokit(deployment.token)
     const { owner, repo, ref, environment } = deployment;
     console.log("Creating deployment...", owner, repo, ref, environment);
-    const resp = await o.repos.createDeployment({
+    const resp = await github.repos.createDeployment({
       owner,
       repo,
       required_contexts: [],
@@ -100,9 +103,9 @@ export async function deploy({
   let code = 1;
   try {
     console.log(`Start rolling out...`);
-    if (deployId) {
+    if (github && deployment && deployId) {
       const { owner, repo } = deployment;
-      await o.repos.createDeploymentStatus({
+      await github.repos.createDeploymentStatus({
         owner,
         repo,
         deployment_id: deployId,
@@ -122,11 +125,11 @@ export async function deploy({
     console.error(e);
     core.setFailed(e.message);
   } finally {
-    if (deployId) {
+    if (github && deployment && deployId) {
       const { owner, repo } = deployment;
       if (code === 0) {
         console.log(`Updating deployment state to 'success'...`);
-        await o.repos.createDeploymentStatus({
+        await github.repos.createDeploymentStatus({
           owner,
           repo,
           auto_inactive: true,
@@ -139,7 +142,7 @@ export async function deploy({
         });
       } else {
         console.log(`Updating deployment state to 'failure'...`);
-        await o.repos.createDeploymentStatus({
+        await github.repos.createDeploymentStatus({
           owner,
           repo,
           deployment_id: deployId,
