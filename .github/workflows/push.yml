@@ -13,4 +13,4 @@ jobs:
         run: |
           make
           git diff --exit-code
-      - name: yarn test
+      - run: yarn test
