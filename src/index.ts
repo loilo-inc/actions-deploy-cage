@@ -1,5 +1,4 @@
 import * as core from "@actions/core";
-import * as io from "@actions/io";
 import {
   aggregateDeploymentParams,
   deploy,
