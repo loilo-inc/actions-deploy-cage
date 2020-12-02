@@ -2,10 +2,6 @@ name: 'Canarycage Deploy'
 description: 'Deploy service with cage'
 author: 'LoiLo'
 inputs:
-  cage-version:
-    description: "Canarycage version"
-    default: "3.3.3"
-    required: false
   deploy-context:
     description: "Directory path that contains service.json and task-definition.json. Mostly relative path from project root."
     required: true

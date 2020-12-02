@@ -4,7 +4,6 @@ import {
   aggregateDeploymentParams,
   deploy,
   GithubDeploymentParams,
-  downloadCage
 } from "./deploy";
 
 function boolify(s: string): boolean {
@@ -20,7 +19,6 @@ function assertInput(name: string): string {
 }
 
 async function main() {
-  const version = core.getInput("cage-version");
   const deployContext = assertInput("deploy-context");
   const region = assertInput("region");
   const createDeployment = boolify(core.getInput("create-deployment"));
@@ -30,9 +28,6 @@ async function main() {
   const ref = core.getInput("github-ref");
   const repository = core.getInput("github-repository");
   try {
-    if (!(await io.which("cage", false))) {
-      await downloadCage({ version });
-    }
     let deployment: GithubDeploymentParams | undefined;
     if (createDeployment) {
       deployment = aggregateDeploymentParams({

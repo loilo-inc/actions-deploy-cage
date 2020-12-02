@@ -1,4 +1,4 @@
-import { parseRef } from "./deploy";
+import {parseRef} from "./deploy";
 
 describe("deploy", () => {
   test("parseRef", () => {
