@@ -33,7 +33,7 @@ async function main() {
         ref,
         repository,
         environment,
-        token
+        token,
       });
     }
     await deploy({
