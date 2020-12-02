@@ -2,8 +2,10 @@ import { getOctokit } from "@actions/github";
 import * as exec from "@actions/exec";
 import * as tc from "@actions/tool-cache";
 import * as core from "@actions/core";
-import type * as gh from "@actions/github/lib/utils"
-type Github = InstanceType<typeof gh.GitHub>
+import type * as gh from "@actions/github/lib/utils";
+import fetch from "node-fetch"
+
+type Github = InstanceType<typeof gh.GitHub>;
 
 export function parseRef(ref: string): string {
   // refs/heads/master -> master
@@ -15,6 +17,25 @@ export function parseRef(ref: string): string {
   return ref;
 }
 
+export async function getLatestVersion() {
+  const url = "https://api.github.com/repos/loilo-inc/canarycage/releases";
+  type Release = {
+    tag_name: string;
+  };
+  const res = await fetch(url)
+  if (res.status === 200) {
+    const list: Release[] = await res.json()
+    const regex = /^(\d+)\.(\d+)\.(\d+)$/;
+    const versions = list
+      .map((v) => v.tag_name)
+      .filter((v) => v.match(regex))
+      .sort((a, b) => b.localeCompare(a));
+    return versions[0]
+  } else {
+    throw new Error(`Could not fetch versions: status=${res.status}`)
+  }
+}
+
 export async function downloadCage({ version }: { version: string }) {
   console.log("🥚 Installing cage...");
   const url = `https://github.com/loilo-inc/canarycage/releases/download/${version}/canarycage_linux_amd64.zip`;
@@ -22,8 +43,6 @@ export async function downloadCage({ version }: { version: string }) {
   const extracted = await tc.extractZip(zip);
   const installed = await tc.cacheDir(extracted, "cage", version);
   core.addPath(installed);
-  const { PATH } = process.env;
-  process.env["PATH"] = PATH + ":" + installed;
   console.log(`🐣 cage has been installed at '${installed}/cage'`);
 }
 
@@ -31,7 +50,7 @@ export function aggregateDeploymentParams({
   environment,
   ref,
   token,
-  repository
+  repository,
 }: Partial<{
   environment: string;
   ref: string;
@@ -55,7 +74,7 @@ export function aggregateDeploymentParams({
     repo,
     ref: parsedRef,
     token,
-    environment
+    environment,
   };
 }
 
@@ -71,17 +90,17 @@ export async function deploy({
   deployContext,
   region,
   deployment,
-  idleDuration
+  idleDuration,
 }: {
   deployContext: string;
   region: string;
   idleDuration?: string;
   deployment?: GithubDeploymentParams;
 }) {
-  let github: Github|undefined
+  let github: Github | undefined;
   let deployId: number | undefined;
   if (deployment) {
-    github = getOctokit(deployment.token)
+    github = getOctokit(deployment.token);
     const { owner, repo, ref, environment } = deployment;
     console.log("Creating deployment...", owner, repo, ref, environment);
     const resp = await github.repos.createDeployment({
@@ -90,7 +109,7 @@ export async function deploy({
       required_contexts: [],
       ref,
       auto_merge: false,
-      environment: environment
+      environment: environment,
     });
     // @ts-ignore
     const { id, url, message } = resp.data;
@@ -111,8 +130,8 @@ export async function deploy({
         deployment_id: deployId,
         state: "in_progress",
         headers: {
-          accept: "application/vnd.github.flash-preview+json"
-        }
+          accept: "application/vnd.github.flash-preview+json",
+        },
       });
     }
     let opts = [`--region ${region}`];
@@ -137,8 +156,8 @@ export async function deploy({
           state: "success",
           headers: {
             accept:
-              "application/vnd.github.ant-man-preview+json, application/vnd.github.flash-preview+json"
-          }
+              "application/vnd.github.ant-man-preview+json, application/vnd.github.flash-preview+json",
+          },
         });
       } else {
         console.log(`Updating deployment state to 'failure'...`);
@@ -146,7 +165,7 @@ export async function deploy({
           owner,
           repo,
           deployment_id: deployId,
-          state: "failure"
+          state: "failure",
         });
       }
       console.log(`Deployment state updated.`);
