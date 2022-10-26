@@ -46,8 +46,11 @@ async function main() {
       region,
       deployment
     });
-  } catch (error) {
-    core.setFailed(error.message);
+  } catch (e) {
+    if (e instanceof Error) {
+      console.error(e);
+    }
+    core.setFailed("Error above occurred");
   }
 }
 

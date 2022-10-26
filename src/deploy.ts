@@ -113,8 +113,10 @@ export async function deploy({
     }
     code = await exec.exec(`cage rollout --region ${region} ${deployContext}`);
   } catch (e) {
-    console.error(e);
-    core.setFailed(e.message);
+    if (e instanceof Error) {
+      console.error(e);
+    }
+    core.setFailed("Error above occurred");
   } finally {
     if (deployId) {
       const { owner, repo } = deployment;
