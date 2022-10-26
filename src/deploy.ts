@@ -110,8 +110,10 @@ export async function deploy({
     const cmd = `cage rollout ${opts.join(" ")} ${deployContext}`;
     code = await exec.exec(cmd);
   } catch (e) {
-    console.error(e);
-    core.setFailed(e.message);
+    if (e instanceof Error) {
+      console.error(e);
+    }
+    core.setFailed("see error above");
   } finally {
     if (github && deployment && deployId) {
       const { owner, repo } = deployment;
