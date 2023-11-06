@@ -27,9 +27,5 @@ inputs:
     description: "Github Token to create deployment on the repository. Required by --create-deployment. Use secrets.GITHUB_TOKEN."
     required: false
 runs:
-<<<<<<< Updated upstream
   using: 'node20'
-=======
-  using: 'node16'
->>>>>>> Stashed changes
   main: 'lib/index.js'
