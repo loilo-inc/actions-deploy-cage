@@ -72,7 +72,7 @@ export async function deploy({
     github = getOctokit(deployment.token);
     const { owner, repo, ref, environment } = deployment;
     console.log("Creating deployment...", owner, repo, ref, environment);
-    const resp = await github.repos.createDeployment({
+    const resp = await github.rest.repos.createDeployment({
       owner,
       repo,
       required_contexts: [],
@@ -93,7 +93,7 @@ export async function deploy({
     console.log(`Start rolling out...`);
     if (github && deployment && deployId) {
       const { owner, repo } = deployment;
-      await github.repos.createDeploymentStatus({
+      await github.rest.repos.createDeploymentStatus({
         owner,
         repo,
         deployment_id: deployId,
@@ -119,7 +119,7 @@ export async function deploy({
       const { owner, repo } = deployment;
       if (code === 0) {
         console.log(`Updating deployment state to 'success'...`);
-        await github.repos.createDeploymentStatus({
+        await github.rest.repos.createDeploymentStatus({
           owner,
           repo,
           auto_inactive: true,
@@ -132,7 +132,7 @@ export async function deploy({
         });
       } else {
         console.log(`Updating deployment state to 'failure'...`);
-        await github.repos.createDeploymentStatus({
+        await github.rest.repos.createDeploymentStatus({
           owner,
           repo,
           deployment_id: deployId,
