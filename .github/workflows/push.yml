@@ -4,17 +4,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-<<<<<<< Updated upstream
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: "16"
-=======
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
->>>>>>> Stashed changes
       - run: yarn install
       - name: Check lib
         run: |
