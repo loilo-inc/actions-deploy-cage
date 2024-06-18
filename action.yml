@@ -1,6 +1,6 @@
-name: 'Canarycage Deploy'
-description: 'Deploy service with cage'
-author: 'LoiLo'
+name: "Canarycage Deploy"
+description: "Deploy service with cage"
+author: "LoiLo"
 inputs:
   deploy-context:
     description: "Directory path that contains service.json and task-definition.json. Mostly relative path from project root."
@@ -13,6 +13,9 @@ inputs:
     required: false
   canary-task-idle-duration:
     description: "--canaryTaskIdleDuration for cage"
+    required: false
+  update-service:
+    description: "--updateService for cage (>=4.0)"
     required: false
   environment:
     description: "Arbitrary release environment for github deployment. e.g. development,staging,production... Required by --create-deployment"
@@ -27,5 +30,5 @@ inputs:
     description: "Github Token to create deployment on the repository. Required by --create-deployment. Use secrets.GITHUB_TOKEN."
     required: false
 runs:
-  using: 'node20'
-  main: 'lib/index.js'
+  using: "node20"
+  main: "lib/index.js"

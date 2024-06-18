@@ -23,6 +23,7 @@ async function main() {
   const createDeployment = boolify(core.getInput("create-deployment"));
   const environment = core.getInput("environment");
   const idleDuration = core.getInput("canary-task-idle-duration");
+  const updateService = boolify(core.getInput("update-service"));
   const token = core.getInput("github-token");
   const ref = core.getInput("github-ref");
   const repository = core.getInput("github-repository");
@@ -41,6 +42,7 @@ async function main() {
       region,
       deployment,
       idleDuration,
+      updateService,
     });
   } catch (e) {
     if (e instanceof Error) {

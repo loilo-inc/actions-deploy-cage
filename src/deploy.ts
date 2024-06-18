@@ -33,7 +33,7 @@ export function aggregateDeploymentParams({
   !repository && missings.push("--github-repository");
   if (!environment || !ref || !token || !repository) {
     throw new Error(
-      `${missings.join(",")} are required if --create-deployment specified.`
+      `${missings.join(",")} are required if --create-deployment specified.`,
     );
   }
   const [owner, repo] = repository.split("/");
@@ -60,11 +60,13 @@ export async function deploy({
   region,
   deployment,
   idleDuration,
+  updateService,
 }: {
   deployContext: string;
   region: string;
   idleDuration?: string;
   deployment?: GithubDeploymentParams;
+  updateService: boolean;
 }) {
   let github: Github | undefined;
   let deployId: number | undefined;
@@ -106,6 +108,9 @@ export async function deploy({
     let opts = [`--region ${region}`];
     if (idleDuration) {
       opts.push(`--canaryTaskIdleDuration ${idleDuration}`);
+    }
+    if (updateService) {
+      opts.push("--updateService");
     }
     const cmd = `cage rollout ${opts.join(" ")} ${deployContext}`;
     code = await exec.exec(cmd);
