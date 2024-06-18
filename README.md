@@ -18,9 +18,9 @@ Before using action, ensure `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` adde
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       steps:
-        - uses: actions/checkout@v1
-        - uses: loilo-inc/actions-setup-cage@master
-        - uses: loilo-inc/actions-deploy-cage@master
+        - uses: actions/checkout@v3
+        - uses: loilo-inc/actions-setup-cage@v5
+        - uses: loilo-inc/actions-deploy-cage@v4
           with:
             region: us-west-2
             deploy-context: .deploy/development/your-service
