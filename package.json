@@ -1,10 +1,9 @@
 {
-  "name": "deploy-cage",
-  "version": "1.0.0",
-  "author": "keroxp <kerokerokerop@gmail.com>",
+  "name": "actions-deploy-cage",
   "license": "MIT",
   "scripts": {
-    "fmt": "prettier --write '**/*.ts'"
+    "fmt": "prettier --write '**/*.ts'",
+    "test": "jest"
   },
   "jest": {
     "preset": "ts-jest"
@@ -16,9 +15,12 @@
     "path-parse": "^1.0.7"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.12",
     "@types/node": "^20",
     "@vercel/ncc": "^0",
+    "jest": "^29.7.0",
     "prettier": "^3",
+    "ts-jest": "^29.1.5",
     "typescript": "^5"
   }
 }

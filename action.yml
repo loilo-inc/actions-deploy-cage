@@ -14,8 +14,13 @@ inputs:
   canary-task-idle-duration:
     description: "--canaryTaskIdleDuration for cage"
     required: false
+    deprecationMessage: "canary-task-idle-duration is deprecated. Use cage-options instead."
   update-service:
     description: "--updateService for cage (>=4.0)"
+    required: false
+    deprecationMessage: "update-service is deprecated. Use cage-options instead."
+  cage-options:
+    description: "Options for cage rollout. Value shold be string. e.g. '--canaryTaskIdleDuration 10 --updateService'"
     required: false
   environment:
     description: "Arbitrary release environment for github deployment. e.g. development,staging,production... Required by --create-deployment"
