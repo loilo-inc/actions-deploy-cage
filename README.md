@@ -10,23 +10,26 @@ Before using action, ensure `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` adde
 `secrets.GITHUB_TOKEN` is automatically added within actions.
 
 ```yaml
-  jobs:
-    deploy:
-      runs-on: ubuntu-latest
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      steps:
-        - uses: actions/checkout@v3
-        - uses: loilo-inc/actions-setup-cage@v5
-        - uses: loilo-inc/actions-deploy-cage@v4
-          with:
-            region: us-west-2
-            deploy-context: .deploy/development/your-service
-            create-deployment: true
-            environment: development
-            github-repository: ${{ github.repository }}
-            github-token: ${{ env.GITHUB_TOKEN }}
-            github-ref: ${{ github.sha }}
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: loilo-inc/actions-setup-cage@v5
+      - uses: loilo-inc/actions-deploy-cage@v4
+        with:
+          region: us-west-2
+          # canarycage options in addition to region
+          cage-options: --canaryTaskIdleDuration 60
+          deploy-context: .deploy/development/your-service
+          # github deployment options
+          create-deployment: true
+          environment: development
+          github-repository: ${{ github.repository }}
+          github-token: ${{ env.GITHUB_TOKEN }}
+          github-ref: ${{ github.sha }}
 ```

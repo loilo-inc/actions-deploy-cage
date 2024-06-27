@@ -56,17 +56,11 @@ export type GithubDeploymentParams = {
 };
 
 export async function deploy({
-  deployContext,
-  region,
   deployment,
-  idleDuration,
-  updateService,
+  args,
 }: {
-  deployContext: string;
-  region: string;
-  idleDuration?: string;
   deployment?: GithubDeploymentParams;
-  updateService: boolean;
+  args: string[];
 }) {
   let github: Github | undefined;
   let deployId: number | undefined;
@@ -105,15 +99,7 @@ export async function deploy({
         },
       });
     }
-    let opts = [`--region ${region}`];
-    if (idleDuration) {
-      opts.push(`--canaryTaskIdleDuration ${idleDuration}`);
-    }
-    if (updateService) {
-      opts.push("--updateService");
-    }
-    const cmd = `cage rollout ${opts.join(" ")} ${deployContext}`;
-    code = await exec.exec(cmd);
+    code = await exec.exec("cage", ["rollout", ...args]);
   } catch (e) {
     if (e instanceof Error) {
       console.error(e);
