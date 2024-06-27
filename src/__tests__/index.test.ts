@@ -33,9 +33,9 @@ describe("index", () => {
       args: [
         "--region",
         "us-west-2",
-        "--canary-task-idle-duration",
+        "--canaryTaskIdleDuration",
         "10",
-        "--update-service",
+        "--updateService",
         "--foo",
         "bar",
         "--baz",
