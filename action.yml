@@ -35,5 +35,5 @@ inputs:
     description: "Github Token to create deployment on the repository. Required by --create-deployment. Use secrets.GITHUB_TOKEN."
     required: false
 runs:
-  using: "node20"
+  using: "node22"
   main: "lib/index.js"
