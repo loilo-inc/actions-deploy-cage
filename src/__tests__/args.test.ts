@@ -1,5 +1,5 @@
+import { describe, expect, test } from "vitest";
 import { parseStringToArgs } from "../args";
-
 describe("args", () => {
   test.each([
     ["--opt1 10 --opt2", ["--opt1", "10", "--opt2"]],

@@ -3,24 +3,18 @@
   "license": "MIT",
   "scripts": {
     "fmt": "prettier --write '**/*.ts'",
-    "test": "jest"
-  },
-  "jest": {
-    "preset": "ts-jest"
+    "test": "vitest run"
   },
   "dependencies": {
     "@actions/core": "^1.2.6",
     "@actions/exec": "^1.0.4",
-    "@actions/github": "^6.0.0",
-    "path-parse": "^1.0.7"
+    "@actions/github": "^6.0.0"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.12",
     "@types/node": "^22",
     "@vercel/ncc": "^0",
-    "jest": "^29.7.0",
     "prettier": "^3",
-    "ts-jest": "^29.1.5",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.0.16"
   }
 }

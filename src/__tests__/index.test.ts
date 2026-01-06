@@ -1,10 +1,10 @@
 import * as core from "@actions/core";
-import * as deploy from "../deploy";
+import { describe, expect, test, vi } from "vitest";
 import { main } from "..";
-
+import * as deploy from "../deploy";
 describe("index", () => {
   const input = (key: string, value: string) => {
-    jest.spyOn(core, "getInput").mockImplementationOnce((name: string) => {
+    vi.spyOn(core, "getInput").mockImplementationOnce((name: string) => {
       expect(name).toBe(key);
       return value;
     });
@@ -20,7 +20,7 @@ describe("index", () => {
     input("github-token", "token");
     input("github-ref", "refs/heads/main");
     input("github-repository", "owner/repo");
-    const deploySpy = jest.spyOn(deploy, "deploy").mockResolvedValueOnce();
+    const deploySpy = vi.spyOn(deploy, "deploy").mockResolvedValueOnce();
     await main();
     expect(deploySpy).toHaveBeenCalledWith({
       deployment: {
@@ -46,7 +46,7 @@ describe("index", () => {
   test("minimal", async () => {
     input("deploy-context", ".");
     input("region", "us-west-2");
-    const deploySpy = jest.spyOn(deploy, "deploy").mockResolvedValueOnce();
+    const deploySpy = vi.spyOn(deploy, "deploy").mockResolvedValueOnce();
     await main();
     expect(deploySpy).toHaveBeenCalledWith({
       deployment: undefined,
