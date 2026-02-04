@@ -8,9 +8,12 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: "24"
-      - run: npm i
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@loilo-inc"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: npm ci
       - name: Check lib
         run: |
           make
           git diff --exit-code
-      - run: npm test
