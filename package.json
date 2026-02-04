@@ -1,24 +1,20 @@
 {
-  "name": "deploy-cage",
-  "version": "1.0.0",
-  "author": "keroxp <kerokerokerop@gmail.com>",
+  "name": "actions-deploy-cage",
   "license": "MIT",
   "scripts": {
-    "fmt": "prettier --write '**/*.ts'"
-  },
-  "jest": {
-    "preset": "ts-jest"
+    "fmt": "prettier --write '**/*.ts'",
+    "test": "vitest run"
   },
   "dependencies": {
-    "@actions/core": "^1.2.6",
-    "@actions/exec": "^1.0.4",
-    "@actions/github": "^6.0.0",
-    "path-parse": "^1.0.7"
+    "@actions/core": "^2",
+    "@actions/exec": "^2",
+    "@actions/github": "^7"
   },
   "devDependencies": {
-    "@types/node": "^20",
+    "@types/node": "^24",
     "@vercel/ncc": "^0",
     "prettier": "^3",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.0.16"
   }
 }

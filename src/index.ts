@@ -4,6 +4,7 @@ import {
   deploy,
   GithubDeploymentParams,
 } from "./deploy";
+import { parseStringToArgs } from "./args";
 
 function boolify(s: string): boolean {
   return s !== "" && !s.match(/^(false|0|undefined|null)$/);
@@ -17,13 +18,14 @@ function assertInput(name: string): string {
   return v;
 }
 
-async function main() {
+export async function main() {
   const deployContext = assertInput("deploy-context");
   const region = assertInput("region");
   const createDeployment = boolify(core.getInput("create-deployment"));
   const environment = core.getInput("environment");
   const idleDuration = core.getInput("canary-task-idle-duration");
   const updateService = boolify(core.getInput("update-service"));
+  const cageOptions = core.getInput("cage-options");
   const token = core.getInput("github-token");
   const ref = core.getInput("github-ref");
   const repository = core.getInput("github-repository");
@@ -37,13 +39,18 @@ async function main() {
         token,
       });
     }
-    await deploy({
-      deployContext,
-      region,
-      deployment,
-      idleDuration,
-      updateService,
-    });
+    const args = ["--region", region];
+    if (idleDuration) {
+      args.push("--canaryTaskIdleDuration", idleDuration);
+    }
+    if (updateService) {
+      args.push("--updateService");
+    }
+    if (cageOptions) {
+      args.push(...parseStringToArgs(cageOptions));
+    }
+    args.push(deployContext);
+    await deploy({ deployment, args });
   } catch (e) {
     if (e instanceof Error) {
       console.error(e);
