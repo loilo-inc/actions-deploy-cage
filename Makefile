@@ -1,3 +1,3 @@
 main: lib/index.js
-lib/index.js: src/*.ts package.json package-lock.json
-	npx ncc build src/index.ts -o lib
+lib/index.js: index.js package.json package-lock.json
+	npx ncc build index.js -o lib
