@@ -1,3 +1,3 @@
-import { deploy } from "@loilo-inc/actions-cage";
+import { run } from "@loilo-inc/actions-deploy-cage";
 
-deploy();
+run();
