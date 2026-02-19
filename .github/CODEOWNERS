@@ -1,0 +1,6 @@
+# CODEOWNERS file
+# This file defines who owns specific files in the repository
+# See https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Package.json is owned by the OSS maintainer JS team
+/package.json @loilo-inc/oss-maintainer-js
