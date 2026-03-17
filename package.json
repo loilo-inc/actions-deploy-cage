@@ -2,9 +2,6 @@
   "name": "actions-deploy-cage",
   "license": "MIT",
   "dependencies": {
-    "@loilo-inc/actions-deploy-cage": "^0.5.4"
-  },
-  "devDependencies": {
-    "esbuild": "^0.27.3"
+    "@loilo-inc/actions-deploy-cage": "^0.5.6"
   }
 }
